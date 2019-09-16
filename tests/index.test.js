@@ -81,18 +81,27 @@ describe('Form.Basic', () => {
 
     expect(form.isFieldsTouched()).toBeFalsy();
     expect(form.isFieldsTouched(['username', 'password'])).toBeFalsy();
+    expect(form.getTouchedFieldsValue()).toEqual({});
+    expect(form.getTouchedFieldsValue(['username', 'password'])).toEqual({});
 
     await changeValue(getField(wrapper, 0), 'Bamboo');
     expect(form.isFieldsTouched()).toBeTruthy();
     expect(form.isFieldsTouched(['username', 'password'])).toBeTruthy();
     expect(form.isFieldsTouched(true)).toBeFalsy();
     expect(form.isFieldsTouched(['username', 'password'], true)).toBeFalsy();
+    expect(form.getTouchedFieldsValue()).toEqual({ username: 'Bamboo' });
+    expect(form.getTouchedFieldsValue(['username', 'password'])).toEqual({ username: 'Bamboo' });
 
     await changeValue(getField(wrapper, 1), 'Light');
     expect(form.isFieldsTouched()).toBeTruthy();
     expect(form.isFieldsTouched(['username', 'password'])).toBeTruthy();
     expect(form.isFieldsTouched(true)).toBeTruthy();
     expect(form.isFieldsTouched(['username', 'password'], true)).toBeTruthy();
+    expect(form.getTouchedFieldsValue()).toEqual({ username: 'Bamboo', password: 'Light' });
+    expect(form.getTouchedFieldsValue(['username', 'password'])).toEqual({
+      username: 'Bamboo',
+      password: 'Light',
+    });
   });
 
   describe('reset form', () => {

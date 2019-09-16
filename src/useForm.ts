@@ -71,6 +71,7 @@ export class FormStore {
     getFieldsValue: this.getFieldsValue,
     getFieldError: this.getFieldError,
     getFieldsError: this.getFieldsError,
+    getTouchedFieldsValue: this.getTouchedFieldsValue,
     isFieldsTouched: this.isFieldsTouched,
     isFieldTouched: this.isFieldTouched,
     isFieldValidating: this.isFieldValidating,
@@ -154,6 +155,33 @@ export class FormStore {
     }
 
     return cloneByNamePathList(this.store, nameList.map(getNamePath));
+  };
+
+  private getTouchedFieldsValue = (nameList?: NamePath[]) => {
+    let fieldEntities = this.getFieldEntities(true);
+
+    if (nameList) {
+      const cache = this.getFieldsMap(true);
+
+      fieldEntities = nameList.map(name => {
+        const namePath = getNamePath(name);
+        return cache.get(namePath);
+      });
+    }
+
+    const touchedNameList = fieldEntities.reduce(
+      (touchedNameListSoFar, field: FieldEntity): NamePath[] => {
+        const namePath = field.getNamePath();
+        const { touched } = field.getMeta();
+        if (touched) {
+          touchedNameListSoFar.push(namePath);
+        }
+        return touchedNameListSoFar;
+      },
+      [],
+    );
+
+    return cloneByNamePathList(this.store, touchedNameList.map(getNamePath));
   };
 
   private getFieldValue = (name: NamePath) => {
